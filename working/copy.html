@@ -1,0 +1,1651 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>SummariV</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #f7f5f0;
+        --surface: #ffffff;
+        --surface2: #f0ede6;
+        --ink: #18160f;
+        --ink2: #4b4840;
+        --ink3: #9b9890;
+        --amber: #c07c2a;
+        --amber-bg: #fdf3e3;
+        --amber-border: #e8c07a;
+        --teal: #1a7a6a;
+        --rose: #b03a42;
+        --rose-bg: #faebec;
+        --green: #2a7a3a;
+        --green-bg: #e4f4e8;
+        --border: rgba(24, 22, 15, 0.1);
+        --border2: rgba(24, 22, 15, 0.18);
+        --r: 10px;
+        --r2: 16px;
+        --fd: "Syne", sans-serif;
+        --fs: "Instrument Sans", sans-serif;
+      }
+
+      html {
+        font-size: 17px;
+      }
+
+      body {
+        font-family: var(--fs);
+        background: var(--bg);
+        color: var(--ink);
+        min-height: 100vh;
+      }
+
+      /* NAV */
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        height: 58px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .nav-logo {
+        width: 33px;
+        height: 33px;
+        background: var(--ink);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .nav-logo svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .nav-title {
+        font-family: var(--fd);
+        font-size: 1.12rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+
+      .inp-sm {
+        padding: 8px 12px;
+        border: 1px solid var(--border2);
+        border-radius: 8px;
+        font-family: var(--fs);
+        font-size: 0.85rem;
+        color: var(--ink);
+        background: var(--bg);
+        outline: none;
+        width: 260px;
+        transition: border-color 0.2s;
+      }
+
+      .inp-sm:focus {
+        border-color: var(--amber);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-family: var(--fd);
+        font-size: 0.85rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        transition: all 0.16s;
+        white-space: nowrap;
+      }
+
+      .btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .btn:not(:disabled):active {
+        transform: scale(0.97);
+      }
+
+      .btn-dark {
+        background: var(--ink);
+        color: #fff;
+      }
+
+      .btn-dark:not(:disabled):hover {
+        background: #2d2a22;
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: var(--ink2);
+        border: 1px solid var(--border2);
+      }
+
+      .btn-ghost:hover {
+        background: var(--surface2);
+      }
+
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.79rem;
+      }
+
+      .nav-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 13px;
+        border-radius: 99px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        background: var(--rose-bg);
+        color: var(--rose);
+        transition: all 0.35s;
+      }
+
+      .nav-pill.ready {
+        background: var(--green-bg);
+        color: var(--green);
+      }
+
+      .nav-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: currentColor;
+        flex-shrink: 0;
+      }
+
+      .nav-pill.ready .nav-dot {
+        animation: blink 2s infinite;
+      }
+
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes shimmer {
+        0% {
+          opacity: 0.55;
+        }
+
+        50% {
+          opacity: 1;
+        }
+
+        100% {
+          opacity: 0.55;
+        }
+      }
+
+      /* ─────────────────────────────────────────────
+         LAYOUT — change the first value to resize
+         the left panel. Currently 320px.
+         e.g. 280px, 360px, 400px etc.
+      ───────────────────────────────────────────── */
+      .layout {
+        display: grid;
+        grid-template-columns: 620px 1fr;
+        /* ← LEFT PANEL WIDTH */
+        height: calc(100vh - 58px);
+      }
+
+      /* LEFT PANEL */
+      .left-panel {
+        display: flex;
+        flex-direction: column;
+        background: #0c0b08;
+        overflow: hidden;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 1.2rem 1rem;
+        gap: 1rem;
+      }
+
+      .left-section-label {
+        font-family: var(--fd);
+        font-size: 0.67rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: rgb(228, 226, 226);
+        margin-bottom: 6px;
+      }
+
+      .upload-zone {
+        border: 1.5px dashed rgba(255, 255, 255, 0.14);
+        border-radius: 10px;
+        padding: 1.1rem 0.8rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 9px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+      }
+
+      .upload-zone:hover,
+      .upload-zone.drag {
+        border-color: var(--amber);
+        background: rgba(192, 124, 42, 0.06);
+      }
+
+      .upload-zone svg {
+        width: 22px;
+        height: 22px;
+        color: rgba(255, 255, 255, 0.25);
+      }
+
+      .upload-zone-text {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.32);
+        line-height: 1.5;
+      }
+
+      .upload-zone-sub {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.16);
+      }
+
+      /* video preview — shown after file is selected */
+      .video-preview {
+        display: none;
+        flex-direction: column;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: #000;
+      }
+
+      .video-preview video {
+        width: 100%;
+        display: block;
+        max-height: 350px;
+        object-fit: contain;
+        background: #000;
+      }
+
+      .video-preview-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        background: rgba(255, 255, 255, 0.05);
+        border-top: 1px solid rgba(255, 255, 255, 0.07);
+      }
+
+      .video-preview-name {
+        font-size: 0.74rem;
+        color: rgba(255, 255, 255, 0.5);
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .video-preview-dur {
+        font-size: 0.7rem;
+        color: rgba(255, 255, 255, 0.25);
+        font-variant-numeric: tabular-nums;
+        flex-shrink: 0;
+      }
+
+      .change-btn {
+        background: rgba(255, 255, 255, 0.08);
+        border: none;
+        border-radius: 5px;
+        padding: 3px 9px;
+        font-size: 0.68rem;
+        color: rgba(255, 255, 255, 0.4);
+        cursor: pointer;
+        font-family: var(--fd);
+        font-weight: 600;
+        transition: background 0.15s;
+        flex-shrink: 0;
+      }
+
+      .change-btn:hover {
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .left-divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.05);
+        flex-shrink: 0;
+      }
+
+      .left-stats {
+        display: none;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .ls-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+
+      .ls-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 7px;
+        padding: 8px 10px;
+      }
+
+      .ls-card .val {
+        font-family: var(--fd);
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--amber);
+        line-height: 1;
+      }
+
+      .ls-card .val.ok {
+        color: var(--green);
+        font-size: 0.82rem;
+      }
+
+      .ls-card .lbl {
+        font-size: 0.63rem;
+        color: rgba(255, 255, 255, 0.22);
+        margin-top: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .left-idle {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      .left-idle svg {
+        width: 26px;
+        height: 26px;
+        opacity: 0.1;
+      }
+
+      .left-idle p {
+        font-size: 0.74rem;
+        color: rgba(255, 255, 255, 0.15);
+        line-height: 1.65;
+        max-width: 155px;
+      }
+
+      /* RIGHT PANEL */
+      .right-panel {
+        display: flex;
+        flex-direction: column;
+        background: var(--surface);
+        overflow: hidden;
+      }
+
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 14px 8px;
+        font-family: var(--fd);
+        font-size: 0.87rem;
+        font-weight: 600;
+        color: var(--ink3);
+        cursor: pointer;
+        text-align: center;
+        border-bottom: 2px solid transparent;
+        transition: all 0.18s;
+        letter-spacing: 0.02em;
+      }
+
+      .tab.active {
+        color: var(--ink);
+        border-bottom-color: var(--amber);
+      }
+
+      .tab-panel {
+        display: none;
+        flex: 1;
+        overflow-y: auto;
+        flex-direction: column;
+      }
+
+      .tab-panel.active {
+        display: flex;
+      }
+
+      /* PROCESS TAB */
+      .process-inner {
+        padding: 1.4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+      }
+
+      .run-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--r2);
+        padding: 1.3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+      }
+
+      .run-card-title {
+        font-family: var(--fd);
+        font-size: 0.95rem;
+        font-weight: 700;
+      }
+
+      .run-card-sub {
+        font-size: 0.84rem;
+        color: var(--ink3);
+        line-height: 1.6;
+      }
+
+      .stages {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .stage-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 11px 0;
+        position: relative;
+      }
+
+      .stage-item:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        left: 15px;
+        top: 36px;
+        bottom: 0;
+        width: 1px;
+        background: var(--border);
+      }
+
+      .stage-item:not(:last-child).done::after {
+        background: var(--green);
+        opacity: 0.4;
+      }
+
+      .stage-dot {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface2);
+        border: 1.5px solid var(--border2);
+        transition: all 0.3s;
+        position: relative;
+        z-index: 1;
+      }
+
+      .stage-dot svg {
+        width: 13px;
+        height: 13px;
+        color: var(--ink3);
+      }
+
+      .stage-item.active .stage-dot {
+        background: var(--amber-bg);
+        border-color: var(--amber-border);
+      }
+
+      .stage-item.done .stage-dot {
+        background: var(--green-bg);
+        border-color: var(--green);
+      }
+
+      .stage-item.error .stage-dot {
+        background: var(--rose-bg);
+        border-color: var(--rose);
+      }
+
+      .stage-body {
+        flex: 1;
+        padding-top: 4px;
+      }
+
+      .stage-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        font-family: var(--fd);
+        color: var(--ink2);
+      }
+
+      .stage-item.active .stage-name {
+        color: var(--ink);
+      }
+
+      .stage-item.done .stage-name {
+        color: var(--green);
+      }
+
+      .stage-item.error .stage-name {
+        color: var(--rose);
+      }
+
+      .stage-sub {
+        font-size: 0.78rem;
+        color: var(--ink3);
+        margin-top: 2px;
+        line-height: 1.5;
+      }
+
+      .stage-item.active .stage-sub {
+        color: var(--amber);
+      }
+
+      .spinner-sm {
+        width: 13px;
+        height: 13px;
+        border: 2px solid var(--amber-border);
+        border-top-color: var(--amber);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+
+      .spinner-btn {
+        width: 13px;
+        height: 13px;
+        border: 2px solid rgba(255, 255, 255, 0.25);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+
+      /* ASK TAB */
+      .ask-inner {
+        padding: 1.4rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+        flex: 1;
+      }
+
+      .search-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .search-wrap {
+        flex: 1;
+        position: relative;
+      }
+
+      .search-ico {
+        position: absolute;
+        left: 11px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--ink3);
+        pointer-events: none;
+      }
+
+      .search-ico svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      .search-inp {
+        width: 100%;
+        padding: 11px 12px 11px 35px;
+        border: 1.5px solid var(--border2);
+        border-radius: var(--r);
+        font-family: var(--fs);
+        font-size: 0.92rem;
+        color: var(--ink);
+        background: var(--bg);
+        outline: none;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .search-inp:focus {
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px rgba(192, 124, 42, 0.1);
+      }
+
+      .search-inp::placeholder {
+        color: var(--ink3);
+      }
+
+      .empty-ask {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 13px;
+        text-align: center;
+        padding: 2rem;
+      }
+
+      .empty-ask svg {
+        width: 40px;
+        height: 40px;
+        color: var(--border2);
+      }
+
+      .empty-ask p {
+        font-size: 0.9rem;
+        color: var(--ink3);
+        max-width: 240px;
+        line-height: 1.65;
+      }
+
+      .answer-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+      }
+
+      .answer-card {
+        background: var(--bg);
+        border-radius: var(--r2);
+        padding: 1.15rem 1.25rem;
+        border: 1px solid var(--border);
+      }
+
+      .answer-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        font-weight: 700;
+        color: var(--teal);
+        margin-bottom: 7px;
+      }
+
+      .answer-text {
+        font-family: var(--fd);
+        font-size: 1.04rem;
+        font-weight: 400;
+        line-height: 1.68;
+        color: var(--ink);
+      }
+
+      .answer-text.miss {
+        color: var(--rose);
+      }
+
+      .conf-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 11px;
+      }
+
+      .conf-label {
+        font-size: 0.75rem;
+        color: var(--ink3);
+        white-space: nowrap;
+      }
+
+      .conf-track {
+        flex: 1;
+        height: 3px;
+        background: var(--border2);
+        border-radius: 99px;
+        overflow: hidden;
+      }
+
+      .conf-fill {
+        height: 100%;
+        border-radius: 99px;
+        transition: width 0.5s ease;
+      }
+
+      .ctx-title {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--ink3);
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .ctx-block {
+        padding: 10px 13px;
+        border-radius: 8px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        font-size: 0.83rem;
+        color: var(--ink2);
+        line-height: 1.7;
+      }
+
+      .clip-embed {
+        border: 1px solid var(--border);
+        border-radius: var(--r2);
+        overflow: hidden;
+        display: none;
+      }
+
+      .clip-embed-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 13px;
+        background: rgba(192, 124, 42, 0.07);
+        border-bottom: 1px solid rgba(192, 124, 42, 0.14);
+      }
+
+      .clip-embed-title {
+        font-family: var(--fd);
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--amber);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .clip-embed-ts {
+        font-size: 0.76rem;
+        color: var(--ink3);
+        font-variant-numeric: tabular-nums;
+      }
+
+      .clip-embed-body {
+        background: #080706;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 130px;
+      }
+
+      video#clip-video {
+        width: 100%;
+        max-height: 210px;
+        object-fit: contain;
+        display: none;
+      }
+
+      .clip-embed-footer {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 8px 12px;
+        border-top: 1px solid var(--border);
+      }
+
+      .clip-jump-label {
+        font-size: 0.76rem;
+        color: var(--ink3);
+        flex: 1;
+      }
+
+      .clip-jump-btn {
+        background: var(--amber);
+        border: none;
+        border-radius: 6px;
+        padding: 6px 13px;
+        font-size: 0.76rem;
+        color: #fff;
+        cursor: pointer;
+        font-family: var(--fd);
+        font-weight: 700;
+        transition: background 0.15s;
+      }
+
+      .clip-jump-btn:hover {
+        background: #a86820;
+      }
+
+      .skel {
+        background: var(--surface2);
+        border-radius: 5px;
+        animation: shimmer 1.3s infinite;
+      }
+
+      /* SUMMARY TAB */
+      .summary-inner {
+        padding: 1.4rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .summary-topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
+        margin-bottom: 1.1rem;
+      }
+
+      .summary-title {
+        font-family: var(--fd);
+        font-size: 0.98rem;
+        font-weight: 700;
+      }
+
+      .summary-body {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+      }
+
+      #summary-text {
+        font-family: var(--fs);
+        font-size: 0.93rem;
+        line-height: 1.95;
+        white-space: pre-wrap;
+        color: var(--ink2);
+      }
+
+      #summary-text.placeholder {
+        color: var(--ink3);
+        font-style: italic;
+      }
+
+      /* TOAST */
+      #toast {
+        position: fixed;
+        bottom: 1.3rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(60px);
+        background: var(--ink);
+        color: #fff;
+        padding: 10px 22px;
+        border-radius: 9px;
+        font-size: 0.85rem;
+        opacity: 0;
+        transition: all 0.3s;
+        z-index: 999;
+        white-space: nowrap;
+      }
+
+      #toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+
+      #toast.err {
+        background: var(--rose);
+      }
+
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 99px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="nav">
+      <div class="nav-brand">
+        <div class="nav-logo">
+          <svg viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.4" />
+            <polygon points="6.5,5.5 11,8 6.5,10.5" fill="white" />
+          </svg>
+        </div>
+        <span class="nav-title">SummariV</span>
+      </div>
+      <div class="nav-right">
+        <input
+          class="inp-sm"
+          id="api-url"
+          type="text"
+          placeholder="https://xxxx.ngrok-free.app"
+        />
+        <button class="btn btn-ghost btn-sm" onclick="checkStatus()">
+          Connect
+        </button>
+        <div class="nav-pill" id="status-pill">
+          <span class="nav-dot"></span>
+          <span id="status-text">Not connected</span>
+        </div>
+      </div>
+    </nav>
+
+    <div class="layout">
+      <div class="left-panel" id="left-panel">
+        <div>
+          <div class="left-section-label">Video</div>
+          <div
+            class="upload-zone"
+            id="upload-zone"
+            onclick="document.getElementById('file-inp').click()"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            <div class="upload-zone-text">Drop MP4 or click</div>
+            <div class="upload-zone-sub">up to ~500 MB</div>
+          </div>
+          <!-- video preview — replaces drop zone after file selected -->
+          <div class="video-preview" id="video-preview">
+            <video id="preview-video" controls preload="metadata"></video>
+            <div class="video-preview-bar">
+              <span class="video-preview-name" id="preview-name">—</span>
+              <span class="video-preview-dur" id="preview-dur">—</span>
+              <button
+                class="change-btn"
+                onclick="document.getElementById('file-inp').click()"
+              >
+                Change
+              </button>
+            </div>
+          </div>
+          <input
+            type="file"
+            id="file-inp"
+            accept="video/mp4"
+            style="display: none"
+            onchange="onFileSelect(this)"
+          />
+        </div>
+
+        <div class="left-divider"></div>
+
+        <div class="left-idle" id="left-idle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1">
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <path d="M8 21h8M12 17v4" />
+          </svg>
+          <p>Run the pipeline to index this video</p>
+        </div>
+
+        <div class="left-stats" id="left-stats">
+          <div class="left-section-label">Index</div>
+          <div class="ls-grid">
+            <div class="ls-card">
+              <div class="val" id="ls-segs">—</div>
+              <div class="lbl">Audio segs</div>
+            </div>
+            <div class="ls-card">
+              <div class="val" id="ls-vis">—</div>
+              <div class="lbl">Visual caps</div>
+            </div>
+            <div class="ls-card">
+              <div class="val" id="ls-dur">—</div>
+              <div class="lbl">Duration</div>
+            </div>
+            <div class="ls-card">
+              <div class="val ok">✓ Ready</div>
+              <div class="lbl">Status</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab('process', this)">
+            Process
+          </div>
+          <div class="tab" onclick="switchTab('ask', this)">Ask</div>
+          <div class="tab" onclick="switchTab('summary', this)">Summary</div>
+        </div>
+
+        <!-- PROCESS TAB -->
+        <div class="tab-panel active" id="tab-process">
+          <div class="process-inner">
+            <div class="run-card">
+              <div class="run-card-title">Run the pipeline</div>
+              <div class="run-card-sub">
+                Whisper transcribes audio into timestamped segments, BLIP
+                captions sampled frames, then FAISS builds a semantic index
+                across both streams.
+              </div>
+              <button
+                class="btn btn-dark"
+                id="process-btn"
+                onclick="uploadAndProcess()"
+                disabled
+                style="justify-content: center; padding: 12px 0"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+                Run Pipeline
+              </button>
+            </div>
+            <div class="stages">
+              <div class="stage-item" id="s-upload">
+                <div class="stage-dot">
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path d="M8 10V4M5 7l3-3 3 3" />
+                    <rect
+                      x="2"
+                      y="11.5"
+                      width="12"
+                      height="1.5"
+                      rx=".75"
+                      fill="currentColor"
+                      stroke="none"
+                    />
+                  </svg>
+                </div>
+                <div class="stage-body">
+                  <div class="stage-name">Upload video</div>
+                  <div class="stage-sub">Send MP4 to backend API</div>
+                </div>
+              </div>
+              <div class="stage-item" id="s-whisper">
+                <div class="stage-dot">
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <path d="M8 2v12M5 4v8M2 6v4M11 4v8M14 6v4" />
+                  </svg>
+                </div>
+                <div class="stage-body">
+                  <div class="stage-name">Whisper transcription</div>
+                  <div class="stage-sub">
+                    Speech → timestamped text segments
+                  </div>
+                </div>
+              </div>
+              <div class="stage-item" id="s-blip">
+                <div class="stage-dot">
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <circle cx="8" cy="8" r="3" />
+                    <path d="M2 8h1M13 8h1M8 2v1M8 13v1" />
+                  </svg>
+                </div>
+                <div class="stage-body">
+                  <div class="stage-name">BLIP captioning</div>
+                  <div class="stage-sub">Visual description per frame</div>
+                </div>
+              </div>
+              <div class="stage-item" id="s-faiss">
+                <div class="stage-dot">
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <circle cx="4" cy="8" r="2" />
+                    <circle cx="12" cy="4" r="2" />
+                    <circle cx="12" cy="12" r="2" />
+                    <path d="M6 8h3M10 5.5l-1.5 1.5M10 10.5l-1.5-1.5" />
+                  </svg>
+                </div>
+                <div class="stage-body">
+                  <div class="stage-name">FAISS index</div>
+                  <div class="stage-sub">Audio + visual vector indices</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ASK TAB -->
+        <div class="tab-panel" id="tab-ask">
+          <div class="ask-inner">
+            <div class="search-row">
+              <div class="search-wrap">
+                <div class="search-ico">
+                  <svg
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  >
+                    <circle cx="7" cy="7" r="4.5" />
+                    <line x1="10.5" y1="10.5" x2="14" y2="14" />
+                  </svg>
+                </div>
+                <input
+                  class="search-inp"
+                  id="q-inp"
+                  type="text"
+                  placeholder="Ask anything about the video…"
+                  onkeydown="if (event.key === 'Enter') doQuery();"
+                />
+              </div>
+              <button class="btn btn-dark btn-sm" onclick="doQuery()">
+                Ask
+              </button>
+            </div>
+            <div
+              id="answer-area"
+              style="
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 0.9rem;
+              "
+            >
+              <div class="empty-ask">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.2"
+                >
+                  <path
+                    d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                  />
+                </svg>
+                <p>
+                  Ask a question — SummariV searches both audio and visual
+                  streams.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUMMARY TAB -->
+        <div class="tab-panel" id="tab-summary">
+          <div class="summary-inner">
+            <div class="summary-topbar">
+              <span class="summary-title">Video Summary</span>
+              <button class="btn btn-ghost btn-sm" onclick="loadSummary()">
+                Regenerate
+              </button>
+            </div>
+            <div class="summary-body">
+              <p id="summary-text" class="placeholder">
+                Process a video first, then open this tab to generate a summary.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+      const NH = { "ngrok-skip-browser-warning": "1" };
+      let selFile = null;
+
+      function toast(msg, err = false) {
+        const el = document.getElementById("toast");
+        el.textContent = msg;
+        el.className = "show" + (err ? " err" : "");
+        clearTimeout(el._t);
+        el._t = setTimeout(() => (el.className = ""), 3500);
+      }
+      function fmt(s) {
+        if (s == null) return "—";
+        return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+      }
+      function fmtDur(s) {
+        if (!s) return "—";
+        const m = Math.floor(s / 60),
+          sec = Math.round(s % 60);
+        return m > 0 ? `${m}m ${sec}s` : `${sec}s`;
+      }
+      function getBase() {
+        const v = document
+          .getElementById("api-url")
+          .value.trim()
+          .replace(/\/$/, "");
+        if (!v) {
+          toast("Paste your ngrok URL first", true);
+          return null;
+        }
+        return v;
+      }
+      function sleep(ms) {
+        return new Promise((r) => setTimeout(r, ms));
+      }
+
+      function switchTab(id, el) {
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-panel")
+          .forEach((p) => p.classList.remove("active"));
+        el.classList.add("active");
+        document.getElementById("tab-" + id).classList.add("active");
+        if (id === "summary") loadSummary();
+      }
+
+      function onFileSelect(inp) {
+        const f = inp.files[0];
+        if (!f) return;
+        selFile = f;
+
+        // swap drop zone → video preview
+        document.getElementById("upload-zone").style.display = "none";
+        const preview = document.getElementById("video-preview");
+        preview.style.display = "flex";
+
+        // set video src — revoke previous blob if any
+        const vid = document.getElementById("preview-video");
+        if (vid._blobUrl) URL.revokeObjectURL(vid._blobUrl);
+        vid._blobUrl = URL.createObjectURL(f);
+        vid.src = vid._blobUrl;
+
+        document.getElementById("preview-name").textContent = f.name;
+        vid.onloadedmetadata = () => {
+          document.getElementById("preview-dur").textContent = fmt(
+            vid.duration,
+          );
+        };
+
+        document.getElementById("process-btn").disabled = false;
+        toast("Video loaded — click Run Pipeline");
+      }
+
+      const lp = document.getElementById("left-panel");
+      const uz = document.getElementById("upload-zone");
+      lp.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        uz.classList.add("drag");
+      });
+      lp.addEventListener("dragleave", () => uz.classList.remove("drag"));
+      lp.addEventListener("drop", (e) => {
+        e.preventDefault();
+        uz.classList.remove("drag");
+        const f = e.dataTransfer.files[0];
+        if (f && f.type === "video/mp4") {
+          const dt = new DataTransfer();
+          dt.items.add(f);
+          document.getElementById("file-inp").files = dt.files;
+          onFileSelect(document.getElementById("file-inp"));
+        } else toast("Please drop an MP4 file", true);
+      });
+
+      async function checkStatus() {
+        const base = getBase();
+        if (!base) return;
+        try {
+          const r = await fetch(`${base}/health`, {
+            signal: AbortSignal.timeout(6000),
+            headers: NH,
+          });
+          if (!r.ok) throw new Error();
+          const d = await r.json();
+          document.getElementById("status-pill").className = "nav-pill ready";
+          document.getElementById("status-text").textContent = "Online";
+          toast(`Connected — LLM: ${d.api_provider || "unknown"}`);
+          pollStats(base);
+        } catch {
+          document.getElementById("status-pill").className = "nav-pill";
+          document.getElementById("status-text").textContent = "Not connected";
+          toast("Cannot reach server — check ngrok URL", true);
+        }
+      }
+
+      async function pollStats(base) {
+        try {
+          const r = await fetch(`${base}/status`, { headers: NH });
+          const d = await r.json();
+          if (d.ready) showLeftStats(d);
+        } catch (_) {}
+      }
+
+      function showLeftStats(d) {
+        document.getElementById("left-idle").style.display = "none";
+        document.getElementById("left-stats").style.display = "flex";
+        document.getElementById("ls-segs").textContent =
+          d.audio_segments ?? "—";
+        document.getElementById("ls-vis").textContent =
+          d.visual_segments ?? "—";
+        document.getElementById("ls-dur").textContent = fmtDur(d.duration);
+      }
+
+      const checkSVG = `<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.3"><polyline points="2,7 5.5,10.5 12,3.5"/></svg>`;
+      const crossSVG = `<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.3"><line x1="3" y1="3" x2="11" y2="11"/><line x1="11" y1="3" x2="3" y2="11"/></svg>`;
+      const STAGE_ICONS = {
+        "s-upload": `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 10V4M5 7l3-3 3 3"/><rect x="2" y="11.5" width="12" height="1.5" rx=".75" fill="currentColor" stroke="none"/></svg>`,
+        "s-whisper": `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v12M5 4v8M2 6v4M11 4v8M14 6v4"/></svg>`,
+        "s-blip": `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M2 8h1M13 8h1M8 2v1M8 13v1"/></svg>`,
+        "s-faiss": `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="8" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="12" cy="12" r="2"/><path d="M6 8h3M10 5.5l-1.5 1.5M10 10.5l-1.5-1.5"/></svg>`,
+      };
+      const STAGE_DEFAULTS = {
+        "s-upload": "Send MP4 to backend API",
+        "s-whisper": "Speech → timestamped text segments",
+        "s-blip": "Visual description per frame",
+        "s-faiss": "Audio + visual vector indices",
+      };
+      function resetStages() {
+        ["s-upload", "s-whisper", "s-blip", "s-faiss"].forEach((id) => {
+          const e = document.getElementById(id);
+          e.className = "stage-item";
+          e.querySelector(".stage-sub").textContent = STAGE_DEFAULTS[id];
+          e.querySelector(".stage-dot").innerHTML = STAGE_ICONS[id];
+        });
+      }
+      function setActive(id, sub) {
+        const e = document.getElementById(id);
+        e.className = "stage-item active";
+        e.querySelector(".stage-sub").textContent = sub;
+        e.querySelector(".stage-dot").innerHTML =
+          `<div class="spinner-sm"></div>`;
+      }
+      function setDone(id, sub) {
+        const e = document.getElementById(id);
+        e.className = "stage-item done";
+        e.querySelector(".stage-sub").textContent = sub;
+        e.querySelector(".stage-dot").innerHTML = checkSVG;
+      }
+      function setError(id) {
+        const e = document.getElementById(id);
+        e.className = "stage-item error";
+        e.querySelector(".stage-sub").textContent = "Failed";
+        e.querySelector(".stage-dot").innerHTML = crossSVG;
+      }
+      function resetBtn() {
+        const b = document.getElementById("process-btn");
+        b.disabled = false;
+        b.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Pipeline`;
+      }
+
+      async function uploadAndProcess() {
+        const base = getBase();
+        if (!base || !selFile) {
+          toast("Select a video first", true);
+          return;
+        }
+        document.getElementById("process-btn").disabled = true;
+        document.getElementById("process-btn").innerHTML =
+          `<div class="spinner-btn"></div> Processing…`;
+        document.getElementById("left-idle").style.display = "flex";
+        document.getElementById("left-stats").style.display = "none";
+        resetStages();
+        switchTab("process", document.querySelectorAll(".tab")[0]);
+
+        setActive("s-upload", "Uploading video…");
+        const fd = new FormData();
+        fd.append("video", selFile);
+        try {
+          const r = await fetch(`${base}/upload`, {
+            method: "POST",
+            body: fd,
+            headers: NH,
+          });
+          if (!r.ok) {
+            const e = await r.json().catch(() => {});
+            throw new Error(e?.detail || r.status);
+          }
+          setDone("s-upload", "Video uploaded successfully");
+        } catch (e) {
+          setError("s-upload");
+          toast("Upload failed: " + e.message, true);
+          resetBtn();
+          return;
+        }
+
+        setActive("s-whisper", "Transcribing speech with Whisper…");
+        let ready = false;
+        for (let i = 0; i < 240; i++) {
+          await sleep(3000);
+          try {
+            const r = await fetch(`${base}/status`, { headers: NH });
+            const d = await r.json();
+            if (d.error) {
+              toast("Pipeline error: " + d.error, true);
+              setError("s-whisper");
+              resetBtn();
+              return;
+            }
+            if (d.stage === "whisper")
+              setActive("s-whisper", "Transcribing speech with Whisper…");
+            else if (d.stage === "blip") {
+              setDone("s-whisper", `${d.audio_segments} audio segments`);
+              setActive("s-blip", "Generating BLIP visual captions…");
+            } else if (d.stage === "faiss") {
+              setDone("s-whisper", `${d.audio_segments} audio segments`);
+              setDone("s-blip", `${d.visual_segments} frames captioned`);
+              setActive("s-faiss", "Building FAISS vector indices…");
+            } else if (d.ready) {
+              setDone("s-whisper", `${d.audio_segments} audio segments`);
+              setDone("s-blip", `${d.visual_segments} visual frames`);
+              setDone("s-faiss", "Indices built — ready to query");
+              document.getElementById("status-pill").className =
+                "nav-pill ready";
+              document.getElementById("status-text").textContent = "Ready";
+              showLeftStats(d);
+              toast("Pipeline complete ✓ — go to Ask tab");
+              ready = true;
+              break;
+            }
+          } catch (_) {}
+        }
+        if (!ready) toast("Timed out — check Colab logs", true);
+        resetBtn();
+      }
+
+      async function doQuery() {
+        const base = getBase();
+        if (!base) return;
+        const q = document.getElementById("q-inp").value.trim();
+        if (!q) {
+          toast("Enter a question", true);
+          return;
+        }
+        document.getElementById("answer-area").innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:10px;padding-top:2px">
+            <div class="skel" style="width:100%;height:15px"></div>
+            <div class="skel" style="width:72%;height:15px"></div>
+            <div class="skel" style="width:50%;height:15px;margin-bottom:4px"></div>
+            <div class="skel" style="width:100%;height:58px"></div>
+          </div>`;
+        try {
+          const fd = new FormData();
+          fd.append("q", q);
+          const r = await fetch(`${base}/query`, {
+            method: "POST",
+            body: fd,
+            headers: NH,
+            signal: AbortSignal.timeout(60000),
+          });
+          if (!r.ok) {
+            const e = await r.json().catch(() => {});
+            throw new Error(e?.detail || r.status);
+          }
+          renderAnswer(await r.json(), base);
+        } catch (e) {
+          document.getElementById("answer-area").innerHTML =
+            `<p style="color:var(--rose);font-size:.88rem;padding-top:.4rem">${e.name === "TimeoutError" ? "Request timed out — try again." : e.message}</p>`;
+        }
+      }
+
+      function renderAnswer(d, base) {
+        const pct = Math.round((d.confidence || 0) * 100);
+        const confColor =
+          pct >= 60 ? "#2a7a3a" : pct >= 35 ? "#c07c2a" : "#b03a42";
+        const ctxHtml = d.context_preview
+          ? `<div><div class="ctx-title">Retrieved context</div><div class="ctx-block">${d.context_preview}</div></div>`
+          : "";
+        document.getElementById("answer-area").innerHTML = `
+          <div class="answer-wrap">
+            <div class="answer-card">
+              <div class="answer-label">${d.found ? "Answer" : "Not found in video"}</div>
+              <div class="answer-text ${d.found ? "" : "miss"}">${d.answer}</div>
+              <div class="conf-row">
+                <span class="conf-label">Confidence ${pct}%</span>
+                <div class="conf-track"><div class="conf-fill" style="width:${pct}%;background:${confColor}"></div></div>
+              </div>
+            </div>
+            ${ctxHtml}
+            <div class="clip-embed" id="clip-embed">
+              <div class="clip-embed-header">
+                <div class="clip-embed-title">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="4,2 14,8 4,14"/></svg>
+                  Evidence Clip
+                </div>
+                <span class="clip-embed-ts" id="clip-ts-label">—</span>
+              </div>
+              <div class="clip-embed-body"><video id="clip-video" controls></video></div>
+              <div class="clip-embed-footer">
+                <span class="clip-jump-label" id="clip-jump-label">—</span>
+                <button class="clip-jump-btn" id="clip-jump-btn">↑ Open in video</button>
+              </div>
+            </div>
+          </div>`;
+        if (d.found && d.clip_id)
+          loadClip(base, d.clip_id, d.timestamp_start, d.timestamp_end);
+      }
+
+      function loadClip(base, clipId, tsStart, tsEnd) {
+        const embed = document.getElementById("clip-embed");
+        if (!embed) return;
+        embed.style.display = "block";
+        document.getElementById("clip-ts-label").textContent =
+          `${fmt(tsStart)} → ${fmt(tsEnd)}`;
+        document.getElementById("clip-jump-label").textContent =
+          `Timestamp ${fmt(tsStart)} – ${fmt(tsEnd)} in the original`;
+        const vid = document.getElementById("clip-video");
+        vid.style.display = "block";
+        vid.pause();
+        vid.removeAttribute("src");
+        vid.load();
+        fetch(`${base}/clip/${clipId}`, { headers: NH })
+          .then((r) => {
+            if (!r.ok) throw new Error();
+            return r.blob();
+          })
+          .then((blob) => {
+            vid.src = URL.createObjectURL(blob);
+            vid.load();
+            vid.play().catch(() => {});
+          })
+          .catch(() => {
+            vid.src = `${base}/clip/${clipId}`;
+            vid.load();
+          });
+        document.getElementById("clip-jump-btn").onclick = () => {
+          window.open(`${base}/clip/${clipId}`, "_blank");
+        };
+      }
+
+      async function loadSummary() {
+        const base = getBase();
+        if (!base) return;
+        const el = document.getElementById("summary-text");
+        el.className = "placeholder";
+        el.style.color = "";
+        try {
+          const sr = await fetch(`${base}/status`, { headers: NH });
+          const s = await sr.json();
+          if (!s.ready) {
+            el.textContent =
+              "Process a video first, then open this tab to generate a summary.";
+            return;
+          }
+          el.textContent = "Generating summary from full transcript…";
+          const r = await fetch(`${base}/summary`, {
+            headers: NH,
+            signal: AbortSignal.timeout(120000),
+          });
+          if (!r.ok) throw new Error("summary endpoint returned " + r.status);
+          const d = await r.json();
+          el.className = "";
+          el.textContent =
+            d.summary || "No summary could be generated from this video.";
+        } catch (e) {
+          el.className = "placeholder";
+          el.style.color = "var(--rose)";
+          el.textContent =
+            "Could not generate summary — check connection and try again.";
+        }
+      }
+
+      window.addEventListener("load", () => {
+        const s = localStorage.getItem("sv_url");
+        if (s) document.getElementById("api-url").value = s;
+      });
+      document.getElementById("api-url").addEventListener("input", function () {
+        localStorage.setItem("sv_url", this.value);
+      });
+    </script>
+  </body>
+</html>
