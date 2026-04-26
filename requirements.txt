@@ -1,0 +1,43 @@
+# SummariV — Multimodal RAG for Video Question Answering
+# Install with: pip install -r requirements.txt
+# Note: FFmpeg must be installed separately (apt-get install -y ffmpeg)
+# Recommended environment: Google Colab with T4 GPU
+
+# ── Audio Transcription ──────────────────────────────────────────────────────
+openai-whisper
+
+# ── Visual Captioning & Vision Models ────────────────────────────────────────
+transformers
+timm
+Pillow
+opencv-python
+
+# ── Sentence Embeddings ───────────────────────────────────────────────────────
+sentence-transformers
+
+# ── Vector Search ─────────────────────────────────────────────────────────────
+faiss-cpu
+
+# ── Deep Learning (PyTorch) ───────────────────────────────────────────────────
+torch
+torchvision
+torchaudio
+
+# ── Tokenization ──────────────────────────────────────────────────────────────
+sentencepiece
+
+# ── Web Backend ───────────────────────────────────────────────────────────────
+fastapi
+uvicorn
+nest-asyncio
+pyngrok
+python-multipart
+
+# ── HTTP Client (LLM API calls) ───────────────────────────────────────────────
+requests
+
+# ── FFmpeg Python Bindings ────────────────────────────────────────────────────
+ffmpeg-python
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+numpy
