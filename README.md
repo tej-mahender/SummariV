@@ -155,9 +155,9 @@ Evaluated on the **EDU-VSUM** dataset with 44 manually annotated question-answer
 
 | Metric | Score |
 |---|---|
-| Answer Relevance (AR) | 0.6705 |
-| Evidence Grounding Score (EGS) | 0.6705 |
-| Temporal Localisation Accuracy (TLA) | 1.0000 |
+| Answer Relevance (AR) | 0.834 |
+| Evidence Grounding Score (EGS) |  0.753 |
+| Temporal Localisation Accuracy (TLA) | 0.739 |
 
 ### Best Hyperparameter Configuration
 
